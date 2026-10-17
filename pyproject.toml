@@ -1,0 +1,12 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agentint"
+version = "0.1.0"
+description = "Enterprise integration patterns with agentic AI endpoints"
+requires-python = ">=3.10"
+
+[tool.hatch.build.targets.wheel]
+packages = ["agentint"]
