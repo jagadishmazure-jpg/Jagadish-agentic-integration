@@ -62,6 +62,7 @@ class AgentBatchRunner:
                 try:
                     result, _ = self.agent.invoke(records[idx])
                     self.results[idx] = result
+                    self.errors.pop(idx, None)  # a retried record that now succeeds is no longer an error
                 except Exception as exc:  # noqa: BLE001 - record the error, checkpoint, stop
                     self.errors[idx] = f"{type(exc).__name__}: {exc}"
                     self._save_checkpoint(chunk_start)

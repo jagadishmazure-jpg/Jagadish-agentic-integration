@@ -14,7 +14,7 @@ from __future__ import annotations
 import functools
 import random
 import time
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Tuple
 
 
 class AgentTimeoutError(Exception):

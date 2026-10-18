@@ -15,3 +15,5 @@ checkpoints/
 .idea/
 .vscode/
 .DS_Store
+.ruff_cache/
+*.pdf

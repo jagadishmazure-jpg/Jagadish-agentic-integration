@@ -3,8 +3,6 @@
 # Fully deterministic: no network, no API keys, no real sleeping.
 """Tests for agentint."""
 
-import hashlib
-import hmac
 import json
 import random
 
@@ -27,7 +25,6 @@ from agentint.reliability import (
     retry,
 )
 from agentint.saga import ChoreographedSaga, OrchestratedSaga, SagaFailed
-
 
 # ---------------------------------------------------------------------------
 # helpers
@@ -646,3 +643,14 @@ class TestChoreographedSaga:
         )
         assert "order-flow.committed" not in saga.events
         assert log == ["do:validate", "undo:validate"]
+
+
+def test_batch_resume_clears_error_for_record_that_later_succeeds(tmp_path):
+    """Found while writing the demo: a fixed record used to stay counted as an error."""
+    crash = {"on": True}
+    agent = FakeAgent("t", "batch", should_fail=lambda p: crash["on"] and p == 5)
+    runner = AgentBatchRunner(agent, chunk_size=4, checkpoint_path=tmp_path / "ck.json")
+    with pytest.raises(BatchInterrupted):
+        runner.run(list(range(10)))
+    crash["on"] = False
+    assert runner.run(list(range(10)), resume=True) == {"processed": 10, "errors": 0}
